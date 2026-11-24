@@ -71,12 +71,8 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
 
     private fun showHome() {
         val root = baseLayout("مساعدك الشخصي الذكي")
-        avatar = TextView(this).apply {
-            text = if (female) "👩🏻‍💻" else "👨🏻‍💻"
-            textSize = 94f
-            gravity = Gravity.CENTER
-            setTextColor(cyan)
-            setPadding(0, 12, 0, 10)
+        val avatar = AvatarView(this, female).apply {
+            layoutParams = LinearLayout.LayoutParams(-1, 240)
         }
         root.addView(avatar)
         val greeting = TextView(this).apply {
@@ -272,6 +268,15 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
                 if (::input.isInitialized) { input.setText(result); sendMessage() }
                 else { showChat(); input.setText(result); sendMessage() }
             }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 41 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            startListening()
+        } else if (requestCode == 41) {
+            Toast.makeText(this, "لازم تسمح باستخدام الميكروفون لتفعيل الصوت", Toast.LENGTH_LONG).show()
         }
     }
 
