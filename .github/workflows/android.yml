@@ -29,6 +29,14 @@ jobs:
         with:
           gradle-version: '8.9'
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check backend syntax
+        run: npm run check
+
       - name: Verify Android project files
         run: |
           test -f settings.gradle
