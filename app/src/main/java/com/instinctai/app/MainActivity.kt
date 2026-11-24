@@ -176,7 +176,7 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
                 setRequestProperty("Content-Type", "application/json")
                 if (token.isNotBlank()) setRequestProperty("Authorization", "Bearer $token")
             }
-            val payload = JSONObject().put("message", prompt).put("history", JSONArray()).toString()
+            val payload = JSONObject().put("message", prompt).put("history", backendHistory()).toString()
             conn.outputStream.use { it.write(payload.toByteArray(Charsets.UTF_8)) }
             val stream = if (conn.responseCode in 200..299) conn.inputStream else conn.errorStream
             val body = stream.bufferedReader().use { it.readText() }
@@ -185,6 +185,20 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
         } catch (e: Exception) {
             "تعذر الاتصال بالخادم: ${e.localizedMessage ?: "تحقق من الإنترنت ورابط الخادم"}"
         }
+    }
+
+    private fun backendHistory(): JSONArray {
+        val stored = try { JSONArray(prefs.getString("history", "[]") ?: "[]") } catch (_: Exception) { JSONArray() }
+        val result = JSONArray()
+        val start = (stored.length() - 12).coerceAtLeast(0)
+        for (i in start until stored.length()) {
+            val item = stored.optJSONObject(i) ?: continue
+            val role = item.optString("role")
+            if (role == "user" || role == "assistant") {
+                result.put(JSONObject().put("role", role).put("content", item.optString("text").take(4000)))
+            }
+        }
+        return result
     }
 
     private fun handleLocalCommand(raw: String): String? {
