@@ -32,11 +32,13 @@ jobs:
       - name: Verify Android project files
         run: |
           test -f settings.gradle
+          test -f build.gradle
           test -f app/build.gradle
           test -f app/src/main/AndroidManifest.xml
+          test -f app/src/main/java/com/instinctai/app/MainActivity.kt
 
       - name: Build debug APK
-        run: gradle --no-daemon assembleDebug
+        run: gradle --no-daemon --stacktrace :app:assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
