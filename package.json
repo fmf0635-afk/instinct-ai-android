@@ -1,0 +1,10 @@
+{
+  "name": "instinct-ai",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Bilingual personal AI assistant starter with secure backend and desktop shell",
+  "type": "module",
+  "scripts": {"start": "node server/index.js", "desktop": "electron desktop/main.cjs"},
+  "engines": {"node": ">=20"},
+  "devDependencies": {"electron": "^33.2.1"}
+}
